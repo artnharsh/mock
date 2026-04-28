@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Product Gallery</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 180px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+button {
+  margin-top: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+
+  <div style="text-align:center; margin-bottom:20px;">
+  <input type="text" id="nameInput" placeholder="Product Name">
+  <input type="number" id="priceInput" placeholder="Price">
+  <input type="text" id="imgInput" placeholder="Image URL">
+  <button onclick="addProduct()">Add Product</button>
+</div>
+
+<div class="container">
+  <h2>Product Gallery</h2>
+  <div class="gallery" id="gallery"></div>
+</div>
+
+<!-- EMBEDDED JSON -->
+<script type="application/json" id="productData">
+[
+  {
+    "name": "Headphones",
+    "price": 1499,
+    "image": "https://via.placeholder.com/150"
+  },
+  {
+    "name": "Smart Watch",
+    "price": 2999,
+    "image": "https://via.placeholder.com/150"
+  },
+  {
+    "name": "Keyboard",
+    "price": 999,
+    "image": "https://via.placeholder.com/150"
+  },
+  {
+    "name": "Mouse",
+    "price": 499,
+    "image": "https://via.placeholder.com/150"
+  }
+]
+</script>
+
+<script>
+// GET JSON FROM SCRIPT TAG
+const data = JSON.parse(document.getElementById("productData").textContent);
+
+const gallery = document.getElementById("gallery");
+
+// RENDER PRODUCTS
+data.forEach((product, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `
+    <img src="${product.image}">
+    <h3>${product.name}</h3>
+    <p>₹${product.price}</p>
+    <button onclick="buyProduct(${index})">Buy Now</button>
+  `;
+
+  gallery.appendChild(card);
+});
+
+function addProduct() {
+  const name = document.getElementById("nameInput").value;
+  const price = document.getElementById("priceInput").value;
+  const image = document.getElementById("imgInput").value;
+
+  if (!name || !price || !image) {
+    alert("Fill all fields");
+    return;
+  }
+
+  // push new product
+  data.push({
+    name: name,
+    price: price,
+    image: image
+  });
+
+  // clear old gallery
+  gallery.innerHTML = "";
+
+  // re-render everything
+  data.forEach((product, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img src="${product.image}">
+      <h3>${product.name}</h3>
+      <p>₹${product.price}</p>
+      <button onclick="buyProduct(${index})">Buy Now</button>
+    `;
+
+    gallery.appendChild(card);
+  });
+
+  // clear inputs
+  document.getElementById("nameInput").value = "";
+  document.getElementById("priceInput").value = "";
+  document.getElementById("imgInput").value = "";
+}
+
+// BUY INTERACTION
+function buyProduct(index) {
+  const product = data[index];
+  alert(product.name + " purchased!");
+}
+</script>
+
+</body>
+</html>
